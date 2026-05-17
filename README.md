@@ -2,7 +2,7 @@
 
 Trainer de memória para **Linux** (PyQt6): scanner estilo Cheat Engine, congelar valores, importar tabelas `.CT` e teleporte de coordenadas.
 
-**Versão da interface:** V15.3 · **Pacote:** 1.0.1
+**Versão da interface:** V15.3 · **Pacote:** 1.0.2
 
 ## Requisitos
 
