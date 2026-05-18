@@ -1,6 +1,6 @@
 Pacote AUR: agildocheats
 
-1. Publicar no GitHub primeiro (etiqueta v1.0.8 = version.txt):
+1. Publicar no GitHub primeiro (etiqueta v1.0.9 = version.txt):
      cd /home/agildo/AgildoCheats
      ./packaging/publicar-no-github.sh
 
