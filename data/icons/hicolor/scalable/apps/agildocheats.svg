@@ -2,57 +2,54 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
   <defs>
     <linearGradient id="fundo" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#06b6d4"/>
-      <stop offset="55%" stop-color="#6366f1"/>
-      <stop offset="100%" stop-color="#a855f7"/>
+      <stop offset="0%" stop-color="#0ea5e9"/>
+      <stop offset="50%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
     </linearGradient>
-    <linearGradient id="chip" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#1e293b"/>
-      <stop offset="100%" stop-color="#0f172a"/>
+    <linearGradient id="cranio" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#cbd5e1"/>
     </linearGradient>
-    <filter id="sombra" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000" flood-opacity="0.45"/>
+    <filter id="sombra" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#000" flood-opacity="0.5"/>
     </filter>
   </defs>
 
-  <g filter="url(#sombra)">
-    <rect x="48" y="48" width="416" height="416" rx="96" fill="url(#fundo)"/>
-    <rect x="48" y="48" width="416" height="416" rx="96" fill="none" stroke="#ffffff" stroke-opacity="0.18" stroke-width="6"/>
+  <rect x="32" y="32" width="448" height="448" rx="104" fill="url(#fundo)"/>
+  <rect x="32" y="32" width="448" height="448" rx="104" fill="none" stroke="#ffffff" stroke-opacity="0.15" stroke-width="5"/>
+
+  <g filter="url(#sombra)" transform="translate(256 248)">
+    <!-- Cranio -->
+    <path fill="url(#cranio)" stroke="#0f172a" stroke-width="8" stroke-linejoin="round"
+      d="M0 -120 C-88 -120 -132 -56 -132 8 C-132 56 -108 88 -72 104 L-72 132
+         C-72 152 -56 168 -36 168 L36 168 C56 168 72 152 72 132 L72 104
+         C108 88 132 56 132 8 C132 -56 88 -120 0 -120 Z"/>
+
+    <!-- Olhos -->
+    <ellipse cx="-48" cy="-8" rx="40" ry="48" fill="#0f172a"/>
+    <ellipse cx="48" cy="-8" rx="40" ry="48" fill="#0f172a"/>
+    <ellipse cx="-48" cy="-16" rx="14" ry="18" fill="#22d3ee" opacity="0.85"/>
+    <ellipse cx="48" cy="-16" rx="14" ry="18" fill="#22d3ee" opacity="0.85"/>
+
+    <!-- Nariz -->
+    <path fill="#0f172a" d="M0 24 L-18 64 L18 64 Z"/>
+
+    <!-- Maxilar / dentes -->
+    <path fill="#e2e8f0" stroke="#0f172a" stroke-width="6" stroke-linejoin="round"
+      d="M-76 132 L-76 168 C-76 188 -60 200 -40 200 L40 200 C60 200 76 188 76 168 L76 132 Z"/>
+    <g fill="#0f172a">
+      <rect x="-58" y="142" width="22" height="28" rx="4"/>
+      <rect x="-28" y="142" width="22" height="28" rx="4"/>
+      <rect x="6" y="142" width="22" height="28" rx="4"/>
+      <rect x="36" y="142" width="22" height="28" rx="4"/>
+    </g>
+
+    <!-- Rachadura estilo cheat -->
+    <path fill="none" stroke="#a855f7" stroke-width="7" stroke-linecap="round"
+      d="M-20 -72 L8 -40 L-4 -8 L28 24"/>
   </g>
 
-  <g transform="translate(256 268)">
-    <rect x="-132" y="-88" width="264" height="176" rx="20" fill="url(#chip)" stroke="#38bdf8" stroke-width="6"/>
-  </g>
-  <g fill="#94a3b8">
-    <rect x="108" y="198" width="18" height="36" rx="4"/>
-    <rect x="142" y="198" width="18" height="36" rx="4"/>
-    <rect x="176" y="198" width="18" height="36" rx="4"/>
-    <rect x="210" y="198" width="18" height="36" rx="4"/>
-    <rect x="284" y="198" width="18" height="36" rx="4"/>
-    <rect x="318" y="198" width="18" height="36" rx="4"/>
-    <rect x="352" y="198" width="18" height="36" rx="4"/>
-    <rect x="386" y="198" width="18" height="36" rx="4"/>
-    <rect x="108" y="306" width="18" height="36" rx="4"/>
-    <rect x="142" y="306" width="18" height="36" rx="4"/>
-    <rect x="176" y="306" width="18" height="36" rx="4"/>
-    <rect x="210" y="306" width="18" height="36" rx="4"/>
-    <rect x="284" y="306" width="18" height="36" rx="4"/>
-    <rect x="318" y="306" width="18" height="36" rx="4"/>
-    <rect x="352" y="306" width="18" height="36" rx="4"/>
-    <rect x="386" y="306" width="18" height="36" rx="4"/>
-  </g>
-
-  <g transform="translate(256 268)">
-    <rect x="-88" y="-40" width="48" height="80" rx="8" fill="#22c55e"/>
-    <rect x="-28" y="-56" width="48" height="96" rx="8" fill="#4ade80"/>
-    <rect x="32" y="-24" width="48" height="64" rx="8" fill="#facc15"/>
-    <rect x="92" y="-48" width="48" height="88" rx="8" fill="#22d3ee"/>
-  </g>
-
-  <g transform="translate(256 118)">
-    <path d="M0 52 L0 -44 L-40 4 L-14 4 L-14 52 Z" fill="#ffffff" fill-opacity="0.95"/>
-    <path d="M0 52 L0 -44 L40 4 L14 4 L14 52 Z" fill="#e2e8f0"/>
-  </g>
-
-  <text x="256" y="392" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="44" fill="#ffffff" fill-opacity="0.92">0x</text>
+  <!-- 0x discreto -->
+  <text x="256" y="448" text-anchor="middle" font-family="sans-serif" font-weight="800"
+    font-size="40" fill="#ffffff" fill-opacity="0.9">0x</text>
 </svg>
