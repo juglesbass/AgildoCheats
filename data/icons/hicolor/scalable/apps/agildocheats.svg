@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
   <defs>
-    <radialGradient id="fundo" cx="50%" cy="42%" r="58%">
-      <stop offset="0%" stop-color="#1a1a22"/>
-      <stop offset="70%" stop-color="#0a0a0e"/>
+    <radialGradient id="fundo" cx="50%" cy="38%" r="65%">
+      <stop offset="0%" stop-color="#2d1f4e"/>
+      <stop offset="55%" stop-color="#120a1c"/>
       <stop offset="100%" stop-color="#000000"/>
     </radialGradient>
     <linearGradient id="cranio" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#3d3d48"/>
-      <stop offset="45%" stop-color="#1c1c24"/>
-      <stop offset="100%" stop-color="#0d0d12"/>
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="35%" stop-color="#e8e8f0"/>
+      <stop offset="100%" stop-color="#a8a8b8"/>
     </linearGradient>
-    <linearGradient id="brilho" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.12"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-    </linearGradient>
-    <filter id="sombra" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#000" flood-opacity="0.85"/>
+    <radialGradient id="olho" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff4444"/>
+      <stop offset="55%" stop-color="#dc0000"/>
+      <stop offset="100%" stop-color="#450000"/>
+    </radialGradient>
+    <filter id="sombra" x="-25%" y="-25%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000" flood-opacity="0.9"/>
     </filter>
-    <filter id="brilhoOlho">
-      <feGaussianBlur stdDeviation="3" result="b"/>
+    <filter id="glowOlho" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="5" result="b"/>
       <feMerge>
         <feMergeNode in="b"/>
         <feMergeNode in="SourceGraphic"/>
@@ -27,49 +28,48 @@
     </filter>
   </defs>
 
-  <rect x="24" y="24" width="464" height="464" rx="96" fill="url(#fundo)"/>
-  <rect x="24" y="24" width="464" height="464" rx="96" fill="none" stroke="#2a2a35" stroke-width="4"/>
+  <rect x="20" y="20" width="472" height="472" rx="100" fill="url(#fundo)"/>
+  <rect x="20" y="20" width="472" height="472" rx="100" fill="none" stroke="#ff2222" stroke-opacity="0.25" stroke-width="3"/>
 
-  <g filter="url(#sombra)" transform="translate(256 242)">
-    <path fill="url(#cranio)" stroke="#050508" stroke-width="6" stroke-linejoin="round"
-      d="M0 -118 C-86 -118 -128 -54 -128 10 C-128 58 -104 90 -70 106 L-70 130
-         C-70 150 -54 166 -34 166 L34 166 C54 166 70 150 70 130 L70 106
-         C104 90 128 58 128 10 C128 -54 86 -118 0 -118 Z"/>
-    <path fill="url(#brilho)" opacity="0.9"
-      d="M0 -118 C-86 -118 -128 -54 -128 10 C-128 58 -104 90 -70 106 L-70 130
-         C-70 150 -54 166 -34 166 L34 166 C54 166 70 150 70 130 L70 106
-         C104 90 128 58 128 10 C128 -54 86 -118 0 -118 Z"/>
+  <g filter="url(#sombra)" transform="translate(256 238)">
+    <path fill="url(#cranio)" stroke="#1a1a22" stroke-width="7" stroke-linejoin="round"
+      d="M0 -122 C-90 -122 -134 -58 -134 6 C-134 54 -108 88 -72 104 L-72 128
+         C-72 148 -56 164 -36 164 L36 164 C56 164 72 148 72 128 L72 104
+         C108 88 134 54 134 6 C134 -58 90 -122 0 -122 Z"/>
 
-    <ellipse cx="-46" cy="-6" rx="38" ry="46" fill="#000000"/>
-    <ellipse cx="46" cy="-6" rx="38" ry="46" fill="#000000"/>
-    <ellipse cx="-46" cy="-6" rx="30" ry="38" fill="#120808"/>
-    <ellipse cx="46" cy="-6" rx="30" ry="38" fill="#120808"/>
+    <!-- Contorno forte -->
+    <path fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="3"
+      d="M0 -122 C-90 -122 -134 -58 -134 6 C-134 54 -108 88 -72 104 L-72 128
+         C-72 148 -56 164 -36 164 L36 164 C56 164 72 148 72 128 L72 104
+         C108 88 134 54 134 6 C134 -58 90 -122 0 -122 Z"/>
 
-    <g filter="url(#brilhoOlho)">
-      <ellipse cx="-46" cy="-10" rx="10" ry="14" fill="#dc2626" opacity="0.95"/>
-      <ellipse cx="46" cy="-10" rx="10" ry="14" fill="#dc2626" opacity="0.95"/>
+    <!-- Olhos -->
+    <ellipse cx="-48" cy="-4" rx="42" ry="50" fill="#0a0008"/>
+    <ellipse cx="48" cy="-4" rx="42" ry="50" fill="#0a0008"/>
+    <g filter="url(#glowOlho)">
+      <ellipse cx="-48" cy="-4" rx="28" ry="34" fill="url(#olho)"/>
+      <ellipse cx="48" cy="-4" rx="28" ry="34" fill="url(#olho)"/>
+      <ellipse cx="-48" cy="-10" rx="10" ry="12" fill="#ffaaaa" opacity="0.9"/>
+      <ellipse cx="48" cy="-10" rx="10" ry="12" fill="#ffaaaa" opacity="0.9"/>
     </g>
-    <ellipse cx="-52" cy="-18" rx="4" ry="5" fill="#7f1d1d" opacity="0.6"/>
-    <ellipse cx="40" cy="-18" rx="4" ry="5" fill="#7f1d1d" opacity="0.6"/>
 
-    <path fill="#000000" d="M0 26 L-16 62 L16 62 Z"/>
+    <path fill="#0a0008" d="M0 28 L-18 66 L18 66 Z"/>
 
-    <path fill="#14141a" stroke="#050508" stroke-width="5" stroke-linejoin="round"
-      d="M-74 130 L-74 166 C-74 186 -58 198 -38 198 L38 198 C58 198 74 186 74 166 L74 130 Z"/>
-    <g fill="#0a0a0e">
-      <rect x="-56" y="140" width="20" height="26" rx="3"/>
-      <rect x="-28" y="140" width="20" height="26" rx="3"/>
-      <rect x="8" y="140" width="20" height="26" rx="3"/>
-      <rect x="36" y="140" width="20" height="26" rx="3"/>
+    <!-- Maxilar -->
+    <path fill="#d4d4dc" stroke="#1a1a22" stroke-width="6" stroke-linejoin="round"
+      d="M-78 128 L-78 168 C-78 190 -60 204 -38 204 L38 204 C60 204 78 190 78 168 L78 128 Z"/>
+    <g fill="#1a1a22">
+      <rect x="-60" y="138" width="22" height="30" rx="3"/>
+      <rect x="-30" y="138" width="22" height="30" rx="3"/>
+      <rect x="8" y="138" width="22" height="30" rx="3"/>
+      <rect x="38" y="138" width="22" height="30" rx="3"/>
     </g>
-    <line x1="-56" y1="153" x2="56" y2="153" stroke="#000" stroke-width="3" opacity="0.6"/>
 
-    <path fill="none" stroke="#450a0a" stroke-width="5" stroke-linecap="round" opacity="0.85"
-      d="M-24 -70 L4 -38 L-8 -6 L24 22"/>
-    <path fill="none" stroke="#1f1f28" stroke-width="3" stroke-linecap="round" opacity="0.5"
-      d="M52 -48 L68 -20 L60 8"/>
+    <!-- Rachadura -->
+    <path fill="none" stroke="#b91c1c" stroke-width="6" stroke-linecap="round"
+      d="M-22 -68 L6 -36 L-6 -4 L26 28"/>
   </g>
 
-  <text x="256" y="452" text-anchor="middle" font-family="sans-serif" font-weight="700"
-    font-size="36" fill="#3f3f46" letter-spacing="4">0x</text>
+  <text x="256" y="456" text-anchor="middle" font-family="sans-serif" font-weight="800"
+    font-size="42" fill="#ff3333" fill-opacity="0.95">0x</text>
 </svg>
