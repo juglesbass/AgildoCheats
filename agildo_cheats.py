@@ -444,7 +444,7 @@ class AgildoCheatsV15(QWidget):
             z = ler(self.input_addr_z.text())
             y = ler(self.input_addr_y.text())
             return (x, z, y)
-        except OSError:
+        except (OSError, ValueError, struct.error):
             return (0.0, 0.0, 0.0)
         finally:
             os.close(fd)
@@ -463,8 +463,8 @@ class AgildoCheatsV15(QWidget):
             escrever(self.input_addr_x.text(), x)
             escrever(self.input_addr_z.text(), z)
             escrever(self.input_addr_y.text(), y)
-        except OSError as e:
-            aviso_acesso_memoria(self, self.pid, e)
+        except (OSError, ValueError, struct.error) as e:
+            aviso_acesso_memoria(self, self.pid, OSError(f"Erro de acesso ou valor inválido: {e}"))
         finally:
             os.close(fd)
 
@@ -731,7 +731,7 @@ class AgildoCheatsV15(QWidget):
                 else:
                     item_val.setText("???")
                     item_val.setForeground(Qt.GlobalColor.darkGray)
-        except OSError:
+        except (OSError, ValueError, struct.error):
             pass
         finally:
             os.close(fd)
@@ -741,7 +741,10 @@ class AgildoCheatsV15(QWidget):
             if "+" in base_str:
                 addr = self.game_module_base + int(base_str.split("+")[1], 16)
             else:
-                addr = int(base_str, 16)
+                try:
+                    addr = int(base_str, 16)
+                except ValueError:
+                    addr = self.game_module_base
             for off_str in offsets:
                 os.lseek(fd, addr + int(off_str, 16), os.SEEK_SET)
                 ptr = os.read(fd, 8)
