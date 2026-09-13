@@ -3,7 +3,10 @@
 from __future__ import annotations
 
 import os
+import pwd
+import shutil
 import struct
+import subprocess
 import sys
 import xml.etree.ElementTree as ET
 from typing import Optional
@@ -145,14 +148,84 @@ def detectar_base_modulo(pid: int, nome_processo: str) -> int:
 
 def aviso_acesso_memoria(parent: QWidget, pid: int, erro: OSError) -> None:
     """Mensagem quando /proc/PID/mem não está acessível."""
+    if os.geteuid() == 0:
+        dica = "• Confira se o jogo ainda está aberto."
+    else:
+        dica = (
+            "• O app está rodando sem root: feche e abra de novo, digitando a senha quando pedir, ou\n"
+            "• echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope"
+        )
     QMessageBox.warning(
         parent,
         "Acesso à memória",
-        f"Não foi possível aceder a /proc/{pid}/mem.\n\n"
-        f"• Executa como root, ou\n"
-        f"• echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope\n\n"
-        f"Detalhe: {erro}",
+        f"Não foi possível acessar /proc/{pid}/mem.\n\n{dica}\n\nDetalhe: {erro}",
     )
+
+
+def pasta_home_usuario() -> str:
+    """Home de quem abriu o app, mesmo rodando como root (o pkexec troca o HOME para /root)."""
+    uid = os.environ.get("PKEXEC_UID") or os.environ.get("SUDO_UID")
+    if uid and uid.isdigit():
+        try:
+            return pwd.getpwuid(int(uid)).pw_dir
+        except KeyError:
+            pass
+    return os.path.expanduser("~")
+
+
+# Variáveis que o root precisa para abrir a janela na sessão gráfica (o pkexec limpa o ambiente)
+VARS_SESSAO_GRAFICA = (
+    "DISPLAY",
+    "XAUTHORITY",
+    "XDG_SESSION_TYPE",
+    "XDG_CURRENT_DESKTOP",
+    "QT_QPA_PLATFORM",
+    "QT_SCALE_FACTOR",
+    "QT_SCREEN_SCALE_FACTORS",
+    "QT_AUTO_SCREEN_SCALE_FACTOR",
+    "QT_ENABLE_HIGHDPI_SCALING",
+    "XCURSOR_THEME",
+    "XCURSOR_SIZE",
+)
+# Marca o processo já relançado, para nunca pedir root em loop
+VAR_RELANCADO = "AGILDO_CHEATS_RELANCADO"
+# O pkexec sai com 127 quando não consegue autorização (sem agente polkit, senha errada...)
+PKEXEC_NAO_AUTORIZADO = 127
+
+
+def reabrir_como_root() -> None:
+    """Relança o app como root via pkexec (a senha é pedida numa janela) e sai com o código dele.
+
+    Se o pkexec não existir ou não autorizar, retorna e o app segue sem root.
+    Se o usuário cancelar a senha, o app fecha.
+    """
+    pkexec = shutil.which("pkexec")
+    if not pkexec or os.environ.get(VAR_RELANCADO):
+        return
+    ambiente = {nome: os.environ[nome] for nome in VARS_SESSAO_GRAFICA if os.environ.get(nome)}
+    wayland = os.environ.get("WAYLAND_DISPLAY")
+    if wayland:
+        # Caminho absoluto do socket: o root conecta sem herdar o XDG_RUNTIME_DIR do usuário
+        ambiente["WAYLAND_DISPLAY"] = os.path.join(os.environ.get("XDG_RUNTIME_DIR", ""), wayland)
+    ambiente[VAR_RELANCADO] = "1"
+    comando = [
+        pkexec,
+        shutil.which("env") or "/usr/bin/env",
+        *(f"{nome}={valor}" for nome, valor in ambiente.items()),
+        sys.executable,
+        os.path.abspath(__file__),
+        *sys.argv[1:],
+    ]
+    with subprocess.Popen(comando) as processo:
+        try:
+            codigo = processo.wait()
+        except KeyboardInterrupt:
+            # O Ctrl+C também chega ao app root; só espera ele fechar
+            codigo = processo.wait()
+    if codigo == PKEXEC_NAO_AUTORIZADO:
+        print("pkexec não autorizou; abrindo sem root.", file=sys.stderr)
+        return
+    sys.exit(codigo)
 
 
 class MemScanThread(QThread):
@@ -667,9 +740,9 @@ class AgildoCheatsV15(QWidget):
     def importar_ct(self):
         path, _ = QFileDialog.getOpenFileName(
             self,
-            "Seleccionar tabela",
-            os.path.expanduser("~"),
-            "Ficheiros (*.CT *.ct *.xml);;Todos (*)",
+            "Selecionar tabela",
+            pasta_home_usuario(),
+            "Arquivos (*.CT *.ct *.xml);;Todos (*)",
         )
         if not path:
             return
@@ -803,6 +876,9 @@ class AgildoCheatsV15(QWidget):
 
 
 if __name__ == "__main__":
+    # Ler/escrever a memória de outro processo exige root (kernel.yama.ptrace_scope >= 1)
+    if os.geteuid() != 0 and "--sem-root" not in sys.argv:
+        reabrir_como_root()
     app = QApplication(sys.argv)
     win = AgildoCheatsV15()
     win.show()
