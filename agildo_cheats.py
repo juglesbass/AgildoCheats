@@ -64,7 +64,7 @@ STYLESHEET = """
     QPushButton#Teleport:hover { background-color: #6a1b9a; }
     QProgressBar { border: 1px solid #333; border-radius: 4px; text-align: center; background-color: #111; color: white; }
     QProgressBar::chunk { background-color: #ff0033; }
-    /* Caixa «Congelar» — contraste alto no fundo escuro da tabela */
+    /* Caixa "Congelar" — contraste alto no fundo escuro da tabela */
     QCheckBox { color: #f0f0f0; spacing: 6px; font-weight: bold; }
     QCheckBox::indicator {
         width: 22px;
@@ -92,7 +92,7 @@ ESTILO_CELULA_CONGELAR = "background-color: #1c1c24;"
 
 
 def valor_para_bytes(valor, tipo_combo: str) -> tuple[bytes, int]:
-    """Converte valor do utilizador para bytes little-endian conforme o tipo seleccionado."""
+    """Converte valor do usuário para bytes little-endian conforme o tipo selecionado."""
     if "DOUBLE" in tipo_combo:
         return struct.pack("<d", float(valor)), 8
     if "FLOAT" in tipo_combo:
@@ -103,14 +103,14 @@ def valor_para_bytes(valor, tipo_combo: str) -> tuple[bytes, int]:
 
 
 def regioes_memoria_escaneaveis(pid: int) -> list[tuple[int, int]]:
-    """Regiões rw-p legíveis (heap/dados); ignora mapeamentos anónimos muito altos."""
+    """Regiões rw-p legíveis (heap/dados); ignora mapeamentos anônimos muito altos."""
     regioes = []
     maps_path = f"/proc/{pid}/maps"
     with open(maps_path, "r", encoding="utf-8", errors="replace") as f:
         for linha in f:
             if "rw-p" not in linha:
                 continue
-            # Heurística: pular blocos anónimos altos (menos ruído em alguns jogos)
+            # Heurística: pular blocos anônimos altos (menos ruído em alguns jogos)
             if linha.startswith("7f"):
                 continue
             partes = linha.split()
@@ -123,7 +123,7 @@ def regioes_memoria_escaneaveis(pid: int) -> list[tuple[int, int]]:
 
 
 def detectar_base_modulo(pid: int, nome_processo: str) -> int:
-    """Escolhe base do executável para ponteiros «modulo+offset» (.CT)."""
+    """Escolhe base do executável para ponteiros "modulo+offset" (.CT)."""
     nome_lower = nome_processo.lower()
     candidato_nome = 0
     candidato_exe = 0
@@ -349,7 +349,7 @@ class AgildoCheatsV15(QWidget):
             "FLOAT (4 Bytes)",
             "DOUBLE (8 Bytes)",
         ])
-        self.input_val = QLineEdit(placeholderText="Valor actual (ex.: 500)")
+        self.input_val = QLineEdit(placeholderText="Valor atual (ex.: 500)")
         r1.addWidget(QLabel("Tipo:"))
         r1.addWidget(self.combo_type)
         r1.addWidget(QLabel("Valor:"))
@@ -393,7 +393,7 @@ class AgildoCheatsV15(QWidget):
         # Aba CT
         t3 = QWidget()
         l3 = QVBoxLayout(t3)
-        btn_open = QPushButton("📂 ABRIR FICHEIRO .CT / XML")
+        btn_open = QPushButton("📂 ABRIR ARQUIVO .CT / XML")
         btn_open.clicked.connect(self.importar_ct)
         l3.addWidget(btn_open)
         self.table_ct = QTableWidget(0, 2)
@@ -414,6 +414,7 @@ class AgildoCheatsV15(QWidget):
 
     def closeEvent(self, event):
         self.parar_scan()
+        self._soltar_worker()
         self.timer_monitor.stop()
         super().closeEvent(event)
 
@@ -460,7 +461,7 @@ class AgildoCheatsV15(QWidget):
         l_mon.addWidget(self.lbl_cur_x)
         l_mon.addWidget(self.lbl_cur_z)
         l_mon.addWidget(self.lbl_cur_y)
-        l4.addWidget(QLabel("📍 POSIÇÃO ACTUAL"))
+        l4.addWidget(QLabel("📍 POSIÇÃO ATUAL"))
         l4.addWidget(gp_mon)
 
         gp_act = QFrame()
@@ -598,7 +599,7 @@ class AgildoCheatsV15(QWidget):
     # --- Scanner ---
     def iniciar_scan(self, modo):
         if not self.pid:
-            QMessageBox.warning(self, "Scanner", "Liga-te a um processo primeiro.")
+            QMessageBox.warning(self, "Scanner", "Conecte-se a um processo primeiro.")
             return
         val_str = self.input_val.text().replace(",", ".")
         tipo = self.combo_type.currentText()
@@ -612,10 +613,11 @@ class AgildoCheatsV15(QWidget):
             return
 
         self.parar_scan()
+        self._soltar_worker()
         self.btn_first.setEnabled(False)
         self.btn_next.setEnabled(False)
         self.btn_stop.setEnabled(True)
-        self.lbl_info.setText("⏳ A escanear...")
+        self.lbl_info.setText("⏳ Escaneando...")
         self.prog.setValue(0)
 
         lista = self.current_results if modo == "NEXT" else None
@@ -627,27 +629,37 @@ class AgildoCheatsV15(QWidget):
 
     def _widget_checkbox_congelar(self) -> QWidget:
         """Checkbox grande e visível na coluna Congelar."""
-        contentor = QWidget()
-        contentor.setStyleSheet(ESTILO_CELULA_CONGELAR)
-        layout = QHBoxLayout(contentor)
+        container = QWidget()
+        container.setStyleSheet(ESTILO_CELULA_CONGELAR)
+        layout = QHBoxLayout(container)
         layout.setContentsMargins(4, 2, 4, 2)
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         chk = QCheckBox("❄")
         chk.setToolTip("Congelar este valor (reaplica a cada 200 ms)")
         chk.setMinimumSize(28, 28)
         layout.addWidget(chk)
-        return contentor
+        return container
 
     def parar_scan(self):
         if self.worker and self.worker.isRunning():
             self.worker.parar = True
-            self.lbl_info.setText("A cancelar scan…")
+            self.lbl_info.setText("Cancelando scan…")
+
+    def _soltar_worker(self):
+        """Espera a thread do scan sair antes de soltar a referência.
+
+        Destruir um QThread que ainda está em execução faz o Qt abortar o app
+        (SIGABRT). A espera é curta: só se chega aqui depois do último sinal da thread.
+        """
+        if self.worker is not None:
+            self.worker.wait()
+            self.worker = None
 
     def _repor_botoes_scan(self):
         self.btn_first.setEnabled(True)
         self.btn_next.setEnabled(True)
         self.btn_stop.setEnabled(False)
-        self.worker = None
+        self._soltar_worker()
 
     def scan_erro(self, mensagem):
         self._repor_botoes_scan()
@@ -655,15 +667,16 @@ class AgildoCheatsV15(QWidget):
         aviso_acesso_memoria(self, self.pid or 0, OSError(mensagem))
 
     def scan_fim(self, resultados):
+        cancelado = bool(self.worker and self.worker.parar)
         self._repor_botoes_scan()
         self.current_results = resultados
         total = len(resultados)
         truncado = total >= MAX_RESULTADOS_SCAN
         msg = f"🎯 Encontrados: {total}"
         if truncado:
-            msg += f" (limite {MAX_RESULTADOS_SCAN}; refina com NEXT SCAN)"
-        if self.worker and self.worker.parar:
-            msg = f"Scan cancelado — {total} endereços até ao cancelamento"
+            msg += f" (limite {MAX_RESULTADOS_SCAN}; refine com NEXT SCAN)"
+        if cancelado:
+            msg = f"Scan cancelado — {total} endereços até o cancelamento"
         self.lbl_info.setText(msg)
 
         self.table.setRowCount(0)
@@ -680,7 +693,7 @@ class AgildoCheatsV15(QWidget):
 
     def menu_contexto_scan(self, pos):
         menu = QMenu()
-        act = menu.addAction("✏️ Editar seleccionados")
+        act = menu.addAction("✏️ Editar selecionados")
         act.triggered.connect(self.editar_selecionados_scan)
         menu.exec(self.table.viewport().mapToGlobal(pos))
 

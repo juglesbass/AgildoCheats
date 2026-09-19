@@ -4,7 +4,7 @@ set -euo pipefail
 RAIZ="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$RAIZ"
 if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-  echo 'Não é um repositório git. Corre: git init -b main && git remote add origin …'
+  echo 'Não é um repositório git. Execute: git init -b main && git remote add origin …'
   exit 1
 fi
 if [[ -z "$(git config user.email 2>/dev/null)" ]]; then
@@ -13,7 +13,7 @@ if [[ -z "$(git config user.email 2>/dev/null)" ]]; then
 fi
 VERSAO="$(tr -d '[:space:]' < version.txt)"
 TAG="v${VERSAO}"
-echo "A enviar main…"
+echo "Enviando main…"
 git push -u origin main
 if git rev-parse -q "refs/tags/${TAG}" >/dev/null 2>&1; then
   git push origin "${TAG}" || true

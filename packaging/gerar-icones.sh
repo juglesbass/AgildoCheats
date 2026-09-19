@@ -6,11 +6,11 @@ SVG="${RAIZ}/data/icons/hicolor/scalable/apps/agildocheats.svg"
 OUT="${RAIZ}/data/icons/hicolor"
 
 if ! command -v rsvg-convert >/dev/null 2>&1; then
-  echo "Instala: sudo pacman -S librsvg"
+  echo "Instale: sudo pacman -S librsvg"
   exit 1
 fi
 
-[[ -f "$SVG" ]] || { echo "SVG em falta: $SVG"; exit 1; }
+[[ -f "$SVG" ]] || { echo "SVG não encontrado: $SVG"; exit 1; }
 
 for tam in 16 22 24 32 48 64 128 256; do
   dir="${OUT}/${tam}x${tam}/apps"

@@ -3,7 +3,7 @@ set -euo pipefail
 FONTES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PKG="$(grep -m1 '^pkgname=' "${FONTES}/PKGBUILD" | cut -d= -f2 | awk '{print $1}')"
 cd "$FONTES"
-grep -qE 'sha256sums=\([^)]*SKIP' PKGBUILD && { echo 'Corre ./prepare-for-aur.sh'; exit 1; }
+grep -qE 'sha256sums=\([^)]*SKIP' PKGBUILD && { echo 'Execute ./prepare-for-aur.sh'; exit 1; }
 if [[ -z "$(git config user.email 2>/dev/null)" ]]; then
   git config user.email 'agomesdasilva99@gmail.com'
   git config user.name 'Agildo Gomes da Silva'

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Publica GitHub (main + etiqueta) e depois AUR.
+# Publica GitHub (main + tag) e depois AUR.
 set -euo pipefail
 RAIZ="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 VERSAO="$(tr -d '[:space:]' < "${RAIZ}/version.txt")"
@@ -18,4 +18,4 @@ echo "=== 3/3 AUR (push) ==="
 ./enviar-para-aur.sh
 
 echo ""
-echo "Pronto. Instala com: paru -Syu agildocheats"
+echo "Pronto. Instale com: paru -Syu agildocheats"

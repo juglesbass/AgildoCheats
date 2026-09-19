@@ -15,4 +15,4 @@ install -Dm644 data/icons/hicolor/scalable/apps/agildocheats.svg \
   /usr/share/icons/hicolor/scalable/apps/agildocheats.svg
 
 gtk-update-icon-cache -f -t /usr/share/icons/hicolor
-echo "Pronto. Corre: kbuildsycoca6 --noincremental"
+echo "Pronto. Execute: kbuildsycoca6 --noincremental"
